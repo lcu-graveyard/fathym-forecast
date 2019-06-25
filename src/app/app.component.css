@@ -1,0 +1,34 @@
+
+p {
+  font-family: Lato;
+}
+
+.logo img {
+    padding:7px;
+}
+
+.container-fluid {
+    height:100%;
+    overflow:hidden;
+}
+
+.controls-row {
+    height: 50%;
+    overflow:hidden;
+}
+
+.map-row {
+    height: 50%;
+}
+
+.input-group {
+    margin-bottom: 10px;
+}
+
+/*.plot-content {
+    overflow-y: auto;
+}*/
+
+.left-controls {
+    overflow-y:auto;
+}

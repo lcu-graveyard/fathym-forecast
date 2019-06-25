@@ -1,0 +1,9 @@
+<div *ngFor="let config of plotConfigs">
+  <div *ngIf="config.hasData(forecastData)" class="col-xs-9">
+    <h6>{{config.displayTitle}}</h6>
+    <variable-data-plot 
+      [validTimes]="validTimes" 
+      [forecastData]="forecastData" 
+      [plot]="config"></variable-data-plot>
+  </div>
+</div>

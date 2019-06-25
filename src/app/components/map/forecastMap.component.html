@@ -1,0 +1,56 @@
+<!-- <div class="map-controls">
+  <div class="map-overlay-select row">
+    <div ngbDropdown class="d-inline-block col-md-3">
+      <button class="btn btn-outline-primary" id="imageVarDropdown" ngbDropdownToggle>Select Image Type</button>
+      <div ngbDropdownMenu aria-labelledby="imageVarDropdown">
+	<button class="dropdown-item" *ngFor="let varName of imageVarNames" (click)="selectImage(varName)">{{varName}}</button>
+      </div>
+    </div>
+    <div class="col-md-1">
+      <p>{{selectedValidTime}}</p>
+    </div>
+    <div class="col-md-8">
+      <mat-slider #imageSlider min="0" max="{{imageValidTimes.length}}" step="1"></mat-slider>
+    </div>
+  </div>
+  <div *ngIf="mapService.isLoaded" class="map-container">
+    <am-map #maper
+	    [initialConfig]="config"
+	    [_id]="'id'"
+	    (onMapClick)="onMapClick($event)"
+	    (loaded)="onMapLoaded()"
+	    >
+      
+    </am-map>
+  </div>
+</div> -->
+<div fxLayout="column" fxFill>
+  
+  <div class="map-overlay-select row">
+      <mat-progress-bar mode="indeterminate" *ngIf="IsLoading"></mat-progress-bar>
+    <div ngbDropdown class="d-inline-block col-md-3">
+        <input class="btn btn-outline-primary" type="button" value="Draw Polygon" (click)="CreatePolygonShape()" />
+        <input class="btn btn-outline-primary" type="button" value="Clear Polygon" (click)="ClearPolygonShape()" />
+      <!-- <button class="btn btn-outline-primary" id="imageVarDropdown" ngbDropdownToggle>Select Image Type</button> -->
+      <div ngbDropdownMenu aria-labelledby="imageVarDropdown">
+	<button class="dropdown-item" *ngFor="let varName of imageVarNames" (click)="selectImage(varName)">{{varName}}</button>
+      </div>
+    </div>
+    <div>
+      <p>{{selectedValidTime}}</p>
+    </div>
+    <div>
+      <mat-slider #imageSlider min="0" max="{{imageValidTimes.length}}" step="1"></mat-slider>
+    </div>
+  </div>
+  <div *ngIf="mapService.isLoaded" class="map-container">
+    <am-map #maper
+	    [initialConfig]="config"
+	    [_id]="'id'"
+	    (onMapClick)="onMapClick($event)"
+	    (loaded)="onMapLoaded()"
+	    >
+      
+    </am-map>
+  </div>
+</div>

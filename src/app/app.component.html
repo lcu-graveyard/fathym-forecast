@@ -1,0 +1,52 @@
+
+<div fxFill>
+  <div fxFlex="30" class="left-controls">
+    <div class="logo">
+      <img src="../assets/images/wxcloud_small.png"/>
+      <img src="../assets/images/azure_small.png"/>
+    </div>
+
+    <mat-tab-group (selectedTabChange)="tabChanged($event)">
+        <mat-tab label="Route Lookup">
+            <route-input #routeInput lbsKey="{{lbsKey}}"></route-input>
+        </mat-tab>
+        <mat-tab label="Build Route">
+            <route-build #routeBuild></route-build>
+        </mat-tab>
+      </mat-tab-group>
+    
+    <div class="data-layer-controls">
+      <div ngbDropdown class="d-inline-block">
+        <button class="btn btn-outline-primary" id="dataSourceDropdown" ngbDropdownToggle>Data Source - {{dataSource.name}}</button>
+        <div ngbDropdownMenu aria-labelledby="dataSourceDropdown">
+          <button class="dropdown-item" *ngFor="let dataSource of dataSources" (click)="selectDataSource(dataSource)">{{dataSource.name}}</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="departure-table">
+      <wc-departure-table [config]="gridParameters"></wc-departure-table>
+    </div>
+
+    <div class="plot-content">
+    <forecast-data-plot 
+      #ForecastDataPlotComponent 
+      [forecastData]="fcstData" 
+      [validTimes]="validTimes">
+    </forecast-data-plot>
+    </div>
+
+  </div>
+  
+  <div fxFlex>
+    <forecast-map lbsKey="{{lbsKey}}"></forecast-map>
+  </div>
+
+  <ngx-spinner
+    bdColor = "rgba(51, 51, 51, 0.8)"
+    size = "large"
+    color = "#934d4d"
+    type = "ball-8bits">
+  </ngx-spinner>
+
+</div>

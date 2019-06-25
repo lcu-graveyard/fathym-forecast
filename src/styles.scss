@@ -1,0 +1,16 @@
+/* Add application styles & imports to this file! */
+
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import '~bootstrap/dist/css/bootstrap.min.css';
+@import '~font-awesome/css/font-awesome.css';
+@import './assets/styles/wc-icons.scss';
+
+body {
+    height: 100%;
+    overflow:hidden;
+    font-family: 'Roboto', sans-serif;
+}
+
+html {
+    height: 100%;
+}

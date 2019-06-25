@@ -1,0 +1,22 @@
+
+
+
+  <table class="table">
+    <tr>
+      <th>Lat</th>
+      <th>Lon</th>
+      <th>Speed</th>
+      <th>Del</th>
+    </tr>
+    <tr *ngFor="let point of points; let i = index">
+      <td>{{point.lat | number:'.4'}}</td>
+      <td>{{point.lon | number:'.4'}}</td>
+      <td>{{point.speed}}</td>
+      <td><span class="glyphicon glyphicon-trash" (click)="deletePoint(i)"></span></td>
+    </tr>
+  </table>
+  <div class="input-group">
+    <button type="button" class="btn btn-primary" (click)="routeClick()">Route</button>
+    <button type="button" class="btn btn-primary" (click)="departTimesClick()">Depart Times</button>
+  </div>
+

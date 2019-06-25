@@ -1,0 +1,58 @@
+<mat-card>
+  <form
+      fxLayout="column"
+      fxLayoutGap="10px"
+      [formGroup]="RouteInputForm">
+        <mat-form-field>
+          <input type="text" 
+            matInput 
+            placeholder="Origin"
+            formControlName="origin" 
+            [matAutocomplete]="origin">
+          <mat-hint *ngIf="RouteInputForm.get('origin').hasError('required')">Enter a starting location</mat-hint>
+          <mat-error *ngIf="RouteInputForm.get('origin').hasError('required')">Origin is required</mat-error>
+        </mat-form-field>
+        <mat-autocomplete #origin="matAutocomplete" [displayWith]="displayResults">
+          <mat-option *ngFor="let origin of (originRoute | async)?.results" [value]="origin">
+            <span>{{ origin.address.freeformAddress }}</span>
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-form-field>
+            <input type="text" 
+              matInput 
+              placeholder="Destination"
+              formControlName="destination" 
+              [matAutocomplete]="destination">
+            <mat-hint *ngIf="RouteInputForm.get('destination').hasError('required')">Enter a ending location</mat-hint>
+            <mat-error *ngIf="RouteInputForm.get('destination').hasError('required')">Destination is required</mat-error>
+          </mat-form-field>
+          <mat-autocomplete #destination="matAutocomplete" [displayWith]="displayResults">
+            <mat-option *ngFor="let destination of (destinationRoute | async)?.results" [value]="destination">
+              <span>{{ destination.address.freeformAddress }}</span>
+            </mat-option>
+          </mat-autocomplete>
+
+          <mat-form-field>
+            <mat-select placeholder="Variable Names" formControlName="varNames" multiple>
+              <mat-select-trigger>
+                  {{ RouteInputForm.get('varNames').value.length > 0 ? RouteInputForm.get('varNames').value[0]['key'] : '' }}
+                  <span *ngIf="RouteInputForm.get('varNames').value?.length > 1" class="example-additional-selection">
+                      (+{{RouteInputForm.get('varNames').value.length - 1}} others)
+                  </span>
+              </mat-select-trigger>
+              <mat-option *ngFor="let varName of varNamesList" [value]="varName['value']">{{varName['key']}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="RouteInputForm.get('varNames').hasError('required')">Variable names are required</mat-error>
+          </mat-form-field>
+
+        <mat-checkbox
+          formControlName="includeAlts" 
+          color="primary">Include alternative routes
+        </mat-checkbox>
+      <div fxLayout="row" fxLayoutGap="10px">
+          <button mat-raised-button color="primary" [disabled]="!RouteInputForm.valid" (click)="routeClick()">Route</button>
+          <button mat-raised-button color="primary" [disabled]="!RouteInputForm.valid" (click)="departTimesClick(WCSearchConstantDeparturTable)">Depart Times</button>
+      </div>
+  </form>
+</mat-card>
