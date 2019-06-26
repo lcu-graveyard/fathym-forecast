@@ -1,6 +1,6 @@
 {
   "name": "@fathym-it/fathym-forecast",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
     "build:wxcloud-ui": "ng build wxcloud-ui --prod",
     "deploy": "npm publish ./dist/wxcloud-ui --access public",
