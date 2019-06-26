@@ -8681,6 +8681,7 @@ var AppComponent = /** @class */ (function () {
         this.name = 'WeatherCloud Route Forecast';
         this.lbsKey = _utils_constants_const__WEBPACK_IMPORTED_MODULE_16__["Const"].LBS_KEY;
         this.dataSources = {};
+        this.loadDataSources();
     }
     AppComponent.prototype.ngOnDestroy = function () {
         this.departureTableSubsscription.unsubscribe();
@@ -8716,7 +8717,7 @@ var AppComponent = /** @class */ (function () {
             }
             _this.handlePolygonResponse(params);
         });
-        this.loadDataSources();
+        // this.loadDataSources();
     };
     AppComponent.prototype.ngAfterViewInit = function () {
         // this.routeInput.getRouteEvent().subscribe(() => this.routeEvent());
@@ -8778,11 +8779,14 @@ var AppComponent = /** @class */ (function () {
      */
     AppComponent.prototype.handleRouteResponse = function (response) {
         console.log('handleRouteResponse', response);
-        var data = response['data'][0]; // if include alts is true, this will return multiple routes, just looking at the first for now
+        if (!response || response.length === 0 || response['data'].length === 0) {
+            return;
+        }
+        var data = response['data'][0]['data']; // if include alts is true, this will return multiple routes, just looking at the first for now
         this.fcstData = data;
-        this.validTimes = data['vtimes'];
+        this.validTimes = response['data'][0]['valid_times'];
         this.plot.Refresh();
-        this.points = this.decode(data['points']);
+        this.points = this.decode(response['data'][0]['points']);
         this.fcstMap.displayRoute(this.points);
     };
     AppComponent.prototype.doRoute = function (url, params) {
@@ -8790,9 +8794,10 @@ var AppComponent = /** @class */ (function () {
         if (this.dataSource.fcstCfg) {
             params = params.set('fcst_cfg', this.dataSource.fcstCfg);
         }
-        if (this.dataSource.varNames) {
-            params = params.set('var_names', this.dataSource.varNames);
-        }
+        // if (this.dataSource.varNames) {
+        // params = params.set('var_names', this.dataSource.varNames);
+        params = params.set('var_names', _utils_constants_const__WEBPACK_IMPORTED_MODULE_16__["Const"].VAR_NAMES);
+        // }
         this.spinner.show();
         console.log('params', params);
         this.http.get(url, { params: params })
@@ -8840,8 +8845,8 @@ var AppComponent = /** @class */ (function () {
         // });
     };
     AppComponent.prototype.routeBuildEvent = function () {
-        //let url = this.dataSource.host + this.dataSource.urlPrefix + '/routepts';
-        var url = this.dataSource.host + '/fcst/routepts';
+        var url = this.dataSource.host + this.dataSource.urlPrefix + '/routepts';
+        // let url = this.dataSource.host + '/fcst/routepts';
         var route = this.routeBuild.getRoutePoints();
         console.log(route.latlons, route.valid_times);
         var params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_5__["HttpParams"]()
@@ -8850,8 +8855,8 @@ var AppComponent = /** @class */ (function () {
         this.doRoute(url, params);
     };
     AppComponent.prototype.routeEvent = function (routeParams) {
-        // let url = this.dataSource.host + this.dataSource.urlPrefix + '/routefcst';
-        var url = this.dataSource.host;
+        var url = this.dataSource.host + this.dataSource.urlPrefix + '/routefcst';
+        // let url = this.dataSource.host;
         var incAlts = String(this.routeInput.showAlternatives);
         var params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_5__["HttpParams"]()
             .set('origin', routeParams.origin)
@@ -9076,7 +9081,7 @@ module.exports = "\r\n<div fxLayoutAlign=\" start center\">\r\n    <mat-form-fie
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".filter-field {\n  font-size: 14px;\n  width: 100%; }\n\n.mat-column-select {\n  overflow: initial; }\n\n.filter-field {\n  font-size: 14px;\n  width: 100%; }\n\n.mat-column-select {\n  overflow: initial; }\n\n.wc-icon-none {\n  color: #c7c7c7; }\n\n.temperature-hot {\n  color: #b40000; }\n\n.temperature-ok {\n  color: #4c9c00; }\n\n.temperature-warn {\n  color: #ec9d1d; }\n\n.temperature-alert {\n  color: #b40000; }\n\n.temperature-warm {\n  color: #ffff0e; }\n\n.temperature-cold {\n  color: blue; }\n\n.temperature-freezing {\n  color: #3084f1; }\n\n.wc-icon {\n  font-size: 27px;\n  margin-right: 5px; }\n\n.gray {\n  background-color: #ececec; }\n\n.light-gray {\n  background-color: #f5f5f5; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9kZXBhcnR1cmUtdGFibGUvRDpcXHByb2plY3RzXFx3b3Jrc3BhY2VcXEZhdGh5bVxcRmF0aHltLldlYXRoZXJDbG91ZC5VSS9zcmNcXGFwcFxcY29tcG9uZW50c1xcZGVwYXJ0dXJlLXRhYmxlXFxkZXBhcnR1cmUtdGFibGUuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxnQkFBZTtFQUNmLFlBQVcsRUFDZDs7QUFFRDtFQUNJLGtCQUFpQixFQUNwQjs7QUFFRDtFQUNJLGdCQUFlO0VBQ2YsWUFBVyxFQUNaOztBQUVEO0VBQ0Usa0JBQWlCLEVBQ2xCOztBQUVEO0VBQ0UsZUFBeUIsRUFDMUI7O0FBRUQ7RUFDRSxlQUFxQixFQUN0Qjs7QUFFRDtFQUNFLGVBQWMsRUFDZjs7QUFFRDtFQUNFLGVBQWMsRUFDZjs7QUFFRDtFQUNFLGVBQXFCLEVBQ3RCOztBQUVEO0VBQ0UsZUFBd0IsRUFDekI7O0FBRUQ7RUFDRSxZQUFXLEVBQ1o7O0FBRUQ7RUFDRSxlQUF3QixFQUN6Qjs7QUFFRDtFQUNFLGdCQUFlO0VBQ2Ysa0JBQ0YsRUFBQzs7QUFDRDtFQUFRLDBCQUEwQixFQUFFOztBQUNwQztFQUFjLDBCQUEwQixFQUFFIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy9kZXBhcnR1cmUtdGFibGUvZGVwYXJ0dXJlLXRhYmxlLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmZpbHRlci1maWVsZCB7XHJcbiAgICBmb250LXNpemU6IDE0cHg7XHJcbiAgICB3aWR0aDogMTAwJTtcclxufVxyXG5cclxuLm1hdC1jb2x1bW4tc2VsZWN0IHtcclxuICAgIG92ZXJmbG93OiBpbml0aWFsO1xyXG59XHJcblxyXG4uZmlsdGVyLWZpZWxkIHtcclxuICAgIGZvbnQtc2l6ZTogMTRweDtcclxuICAgIHdpZHRoOiAxMDAlO1xyXG4gIH1cclxuICBcclxuICAubWF0LWNvbHVtbi1zZWxlY3Qge1xyXG4gICAgb3ZlcmZsb3c6IGluaXRpYWw7XHJcbiAgfVxyXG4gIFxyXG4gIC53Yy1pY29uLW5vbmUge1xyXG4gICAgY29sb3I6IHJnYigxOTksIDE5OSwgMTk5KTtcclxuICB9XHJcblxyXG4gIC50ZW1wZXJhdHVyZS1ob3Qge1xyXG4gICAgY29sb3I6IHJnYigxODAsIDAsIDApO1xyXG4gIH1cclxuICBcclxuICAudGVtcGVyYXR1cmUtb2sge1xyXG4gICAgY29sb3I6ICM0YzljMDA7XHJcbiAgfVxyXG4gIFxyXG4gIC50ZW1wZXJhdHVyZS13YXJuIHtcclxuICAgIGNvbG9yOiAjZWM5ZDFkO1xyXG4gIH1cclxuICBcclxuICAudGVtcGVyYXR1cmUtYWxlcnQge1xyXG4gICAgY29sb3I6IHJnYigxODAsIDAsIDApO1xyXG4gIH1cclxuICBcclxuICAudGVtcGVyYXR1cmUtd2FybSB7XHJcbiAgICBjb2xvcjogcmdiKDI1NSwgMjU1LCAxNCk7XHJcbiAgfVxyXG4gIFxyXG4gIC50ZW1wZXJhdHVyZS1jb2xkIHtcclxuICAgIGNvbG9yOiBibHVlO1xyXG4gIH1cclxuICBcclxuICAudGVtcGVyYXR1cmUtZnJlZXppbmcge1xyXG4gICAgY29sb3I6IHJnYig0OCwgMTMyLCAyNDEpO1xyXG4gIH1cclxuICBcclxuICAud2MtaWNvbiB7XHJcbiAgICBmb250LXNpemU6IDI3cHg7XHJcbiAgICBtYXJnaW4tcmlnaHQ6IDVweFxyXG4gIH1cclxuICAuZ3JheSB7IGJhY2tncm91bmQtY29sb3I6ICNlY2VjZWMgfVxyXG4gIC5saWdodC1ncmF5IHsgYmFja2dyb3VuZC1jb2xvcjogI2Y1ZjVmNSB9XHJcbiAgXHJcbiAgXHJcbiJdfQ== */"
+module.exports = ".filter-field {\n  font-size: 14px;\n  width: 100%; }\n\n.mat-column-select {\n  overflow: initial; }\n\n.filter-field {\n  font-size: 14px;\n  width: 100%; }\n\n.mat-column-select {\n  overflow: initial; }\n\n.wc-icon-none {\n  color: #c7c7c7; }\n\n.temperature-hot {\n  color: #b40000; }\n\n.temperature-ok {\n  color: #4c9c00; }\n\n.temperature-warn {\n  color: #ec9d1d; }\n\n.temperature-alert {\n  color: #b40000; }\n\n.temperature-warm {\n  color: #ffff0e; }\n\n.temperature-cold {\n  color: blue; }\n\n.temperature-freezing {\n  color: #3084f1; }\n\n.wc-icon {\n  font-size: 27px;\n  margin-right: 5px; }\n\n.gray {\n  background-color: #ececec; }\n\n.light-gray {\n  background-color: #f5f5f5; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9kZXBhcnR1cmUtdGFibGUvQzpcXFVzZXJzXFx0cmV2b1xcc291cmNlXFxyZXBvc1xcZmF0aHltLWZvcmVjYXN0L3NyY1xcYXBwXFxjb21wb25lbnRzXFxkZXBhcnR1cmUtdGFibGVcXGRlcGFydHVyZS10YWJsZS5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGdCQUFlO0VBQ2YsWUFBVyxFQUNkOztBQUVEO0VBQ0ksa0JBQWlCLEVBQ3BCOztBQUVEO0VBQ0ksZ0JBQWU7RUFDZixZQUFXLEVBQ1o7O0FBRUQ7RUFDRSxrQkFBaUIsRUFDbEI7O0FBRUQ7RUFDRSxlQUF5QixFQUMxQjs7QUFFRDtFQUNFLGVBQXFCLEVBQ3RCOztBQUVEO0VBQ0UsZUFBYyxFQUNmOztBQUVEO0VBQ0UsZUFBYyxFQUNmOztBQUVEO0VBQ0UsZUFBcUIsRUFDdEI7O0FBRUQ7RUFDRSxlQUF3QixFQUN6Qjs7QUFFRDtFQUNFLFlBQVcsRUFDWjs7QUFFRDtFQUNFLGVBQXdCLEVBQ3pCOztBQUVEO0VBQ0UsZ0JBQWU7RUFDZixrQkFDRixFQUFDOztBQUNEO0VBQVEsMEJBQTBCLEVBQUU7O0FBQ3BDO0VBQWMsMEJBQTBCLEVBQUUiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL2RlcGFydHVyZS10YWJsZS9kZXBhcnR1cmUtdGFibGUuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuZmlsdGVyLWZpZWxkIHtcclxuICAgIGZvbnQtc2l6ZTogMTRweDtcclxuICAgIHdpZHRoOiAxMDAlO1xyXG59XHJcblxyXG4ubWF0LWNvbHVtbi1zZWxlY3Qge1xyXG4gICAgb3ZlcmZsb3c6IGluaXRpYWw7XHJcbn1cclxuXHJcbi5maWx0ZXItZmllbGQge1xyXG4gICAgZm9udC1zaXplOiAxNHB4O1xyXG4gICAgd2lkdGg6IDEwMCU7XHJcbiAgfVxyXG4gIFxyXG4gIC5tYXQtY29sdW1uLXNlbGVjdCB7XHJcbiAgICBvdmVyZmxvdzogaW5pdGlhbDtcclxuICB9XHJcbiAgXHJcbiAgLndjLWljb24tbm9uZSB7XHJcbiAgICBjb2xvcjogcmdiKDE5OSwgMTk5LCAxOTkpO1xyXG4gIH1cclxuXHJcbiAgLnRlbXBlcmF0dXJlLWhvdCB7XHJcbiAgICBjb2xvcjogcmdiKDE4MCwgMCwgMCk7XHJcbiAgfVxyXG4gIFxyXG4gIC50ZW1wZXJhdHVyZS1vayB7XHJcbiAgICBjb2xvcjogIzRjOWMwMDtcclxuICB9XHJcbiAgXHJcbiAgLnRlbXBlcmF0dXJlLXdhcm4ge1xyXG4gICAgY29sb3I6ICNlYzlkMWQ7XHJcbiAgfVxyXG4gIFxyXG4gIC50ZW1wZXJhdHVyZS1hbGVydCB7XHJcbiAgICBjb2xvcjogcmdiKDE4MCwgMCwgMCk7XHJcbiAgfVxyXG4gIFxyXG4gIC50ZW1wZXJhdHVyZS13YXJtIHtcclxuICAgIGNvbG9yOiByZ2IoMjU1LCAyNTUsIDE0KTtcclxuICB9XHJcbiAgXHJcbiAgLnRlbXBlcmF0dXJlLWNvbGQge1xyXG4gICAgY29sb3I6IGJsdWU7XHJcbiAgfVxyXG4gIFxyXG4gIC50ZW1wZXJhdHVyZS1mcmVlemluZyB7XHJcbiAgICBjb2xvcjogcmdiKDQ4LCAxMzIsIDI0MSk7XHJcbiAgfVxyXG4gIFxyXG4gIC53Yy1pY29uIHtcclxuICAgIGZvbnQtc2l6ZTogMjdweDtcclxuICAgIG1hcmdpbi1yaWdodDogNXB4XHJcbiAgfVxyXG4gIC5ncmF5IHsgYmFja2dyb3VuZC1jb2xvcjogI2VjZWNlYyB9XHJcbiAgLmxpZ2h0LWdyYXkgeyBiYWNrZ3JvdW5kLWNvbG9yOiAjZjVmNWY1IH1cclxuICBcclxuICBcclxuIl19 */"
 
 /***/ }),
 
@@ -9284,7 +9289,7 @@ var DepartureTableComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngFor=\"let config of plotConfigs\">\r\n  <div *ngIf=\"config.hasData(forecastData)\" class=\"col-xs-9\">\r\n    <h6 *ngIf=\"config.units\">{{config.title}} ({{config.units}}) Forecast</h6>\r\n    <h6 *ngIf=\"!config.units\">{{config.title}}</h6>\r\n    <variable-data-plot \r\n      [validTimes]=\"validTimes\" \r\n      [forecastData]=\"forecastData\" \r\n      [plot]=\"config\"></variable-data-plot>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div *ngFor=\"let config of plotConfigs\">\r\n  <div *ngIf=\"config.hasData(forecastData)\" class=\"col-xs-9\">\r\n    <h6>{{config.displayTitle}}</h6>\r\n    <variable-data-plot \r\n      [validTimes]=\"validTimes\" \r\n      [forecastData]=\"forecastData\" \r\n      [plot]=\"config\"></variable-data-plot>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -9339,17 +9344,17 @@ var ForecastDataPlotComponent = /** @class */ (function () {
     ForecastDataPlotComponent.prototype.Refresh = function () {
         var _this = this;
         this.plotConfigs = [
-            new _plots_temperature_plot_temperature_plot__WEBPACK_IMPORTED_MODULE_3__["TemperaturePlot"]("C"),
-            new _plots_potential_road_state_plot_potential_road_state_plot__WEBPACK_IMPORTED_MODULE_8__["PotentialRoadStatePlot"](null),
-            new _plots_potential_delay_risk_plot_potential_delay_risk_plot__WEBPACK_IMPORTED_MODULE_9__["PotentialDelayRiskPlot"](null),
-            new _plots_precipitation_plot_precipitation_plot__WEBPACK_IMPORTED_MODULE_4__["PrecipitationPlot"]("mm/hr"),
-            new _plots_snow_depth_plot_snow_depth_plot__WEBPACK_IMPORTED_MODULE_5__["SnowDepthPlot"]("mm"),
-            new _plots_wind_plot_wind_plot__WEBPACK_IMPORTED_MODULE_0__["WindPlot"]("m/s"),
-            new _plots_crosswind_plot_crosswind_plot__WEBPACK_IMPORTED_MODULE_10__["CrosswindPlot"](null),
+            new _plots_temperature_plot_temperature_plot__WEBPACK_IMPORTED_MODULE_3__["TemperaturePlot"]("C", 'Forecast'),
+            new _plots_potential_road_state_plot_potential_road_state_plot__WEBPACK_IMPORTED_MODULE_8__["PotentialRoadStatePlot"](null, ''),
+            new _plots_potential_delay_risk_plot_potential_delay_risk_plot__WEBPACK_IMPORTED_MODULE_9__["PotentialDelayRiskPlot"](null, ''),
+            new _plots_precipitation_plot_precipitation_plot__WEBPACK_IMPORTED_MODULE_4__["PrecipitationPlot"]("mm/hr", 'Forecast'),
+            new _plots_snow_depth_plot_snow_depth_plot__WEBPACK_IMPORTED_MODULE_5__["SnowDepthPlot"]("mm", 'Forecast'),
+            new _plots_wind_plot_wind_plot__WEBPACK_IMPORTED_MODULE_0__["WindPlot"]("m/s", 'Forecast'),
+            new _plots_crosswind_plot_crosswind_plot__WEBPACK_IMPORTED_MODULE_10__["CrosswindPlot"](null, ''),
             // new IrradiancePlot("watt/m^2"),
             // new CloudCoverPlot("%"),
-            new _plots_elevation_plot_elevation_plot__WEBPACK_IMPORTED_MODULE_7__["ElevationPlot"]('ft'),
-            new _plots_numeric_plot_numeric_plot__WEBPACK_IMPORTED_MODULE_6__["NumericPlot"]("Wave Height", { wvhgt: { title: 'Wave Height', color: "#00008d" } }, "m")
+            new _plots_elevation_plot_elevation_plot__WEBPACK_IMPORTED_MODULE_7__["ElevationPlot"]('ft', ''),
+            new _plots_numeric_plot_numeric_plot__WEBPACK_IMPORTED_MODULE_6__["NumericPlot"]("Wave Height", { wvhgt: { title: 'Wave Height', color: "#00008d" } }, "m", '')
         ];
         for (var _i = 0, _a = this.plotConfigs; _i < _a.length; _i++) {
             var plot = _a[_i];
@@ -9406,7 +9411,7 @@ module.exports = "\r\n.map-container {\r\n    margin-top:50px;\r\n    width:100%
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- <div class=\"map-controls\">\r\n  <div class=\"map-overlay-select row\">\r\n    <div ngbDropdown class=\"d-inline-block col-md-3\">\r\n      <button class=\"btn btn-outline-primary\" id=\"imageVarDropdown\" ngbDropdownToggle>Select Image Type</button>\r\n      <div ngbDropdownMenu aria-labelledby=\"imageVarDropdown\">\r\n\t<button class=\"dropdown-item\" *ngFor=\"let varName of imageVarNames\" (click)=\"selectImage(varName)\">{{varName}}</button>\r\n      </div>\r\n    </div>\r\n    <div class=\"col-md-1\">\r\n      <p>{{selectedValidTime}}</p>\r\n    </div>\r\n    <div class=\"col-md-8\">\r\n      <mat-slider #imageSlider min=\"0\" max=\"{{imageValidTimes.length}}\" step=\"1\"></mat-slider>\r\n    </div>\r\n  </div>\r\n  <div *ngIf=\"mapService.isLoaded\" class=\"map-container\">\r\n    <am-map #maper\r\n\t    [initialConfig]=\"config\"\r\n\t    [_id]=\"'id'\"\r\n\t    (onMapClick)=\"onMapClick($event)\"\r\n\t    (loaded)=\"onMapLoaded()\"\r\n\t    >\r\n      \r\n    </am-map>\r\n  </div>\r\n</div> -->\r\n<div fxLayout=\"column\" fxFill>\r\n  \r\n  <div class=\"map-overlay-select row\">\r\n      <mat-progress-bar mode=\"indeterminate\" *ngIf=\"IsLoading\"></mat-progress-bar>\r\n    <div ngbDropdown class=\"d-inline-block col-md-3\">\r\n        <input class=\"btn btn-outline-primary\" type=\"button\" value=\"Draw Polygon\" (click)=\"CreatePolygonShape()\" />\r\n        <input class=\"btn btn-outline-primary\" type=\"button\" value=\"Clear Polygon\" (click)=\"ClearPolygonShape()\" />\r\n      <!-- <button class=\"btn btn-outline-primary\" id=\"imageVarDropdown\" ngbDropdownToggle>Select Image Type</button> -->\r\n      <div ngbDropdownMenu aria-labelledby=\"imageVarDropdown\">\r\n\t<!-- <button class=\"dropdown-item\" *ngFor=\"let varName of imageVarNames\" (click)=\"selectImage(varName)\">{{varName}}</button> -->\r\n      </div>\r\n    </div>\r\n    <div>\r\n      <p>{{selectedValidTime}}</p>\r\n    </div>\r\n    <div>\r\n      <mat-slider #imageSlider min=\"0\" max=\"{{imageValidTimes.length}}\" step=\"1\"></mat-slider>\r\n    </div>\r\n  </div>\r\n  <div *ngIf=\"mapService.isLoaded\" class=\"map-container\">\r\n    <am-map #maper\r\n\t    [initialConfig]=\"config\"\r\n\t    [_id]=\"'id'\"\r\n\t    (onMapClick)=\"onMapClick($event)\"\r\n\t    (loaded)=\"onMapLoaded()\"\r\n\t    >\r\n      \r\n    </am-map>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<!-- <div class=\"map-controls\">\r\n  <div class=\"map-overlay-select row\">\r\n    <div ngbDropdown class=\"d-inline-block col-md-3\">\r\n      <button class=\"btn btn-outline-primary\" id=\"imageVarDropdown\" ngbDropdownToggle>Select Image Type</button>\r\n      <div ngbDropdownMenu aria-labelledby=\"imageVarDropdown\">\r\n\t<button class=\"dropdown-item\" *ngFor=\"let varName of imageVarNames\" (click)=\"selectImage(varName)\">{{varName}}</button>\r\n      </div>\r\n    </div>\r\n    <div class=\"col-md-1\">\r\n      <p>{{selectedValidTime}}</p>\r\n    </div>\r\n    <div class=\"col-md-8\">\r\n      <mat-slider #imageSlider min=\"0\" max=\"{{imageValidTimes.length}}\" step=\"1\"></mat-slider>\r\n    </div>\r\n  </div>\r\n  <div *ngIf=\"mapService.isLoaded\" class=\"map-container\">\r\n    <am-map #maper\r\n\t    [initialConfig]=\"config\"\r\n\t    [_id]=\"'id'\"\r\n\t    (onMapClick)=\"onMapClick($event)\"\r\n\t    (loaded)=\"onMapLoaded()\"\r\n\t    >\r\n      \r\n    </am-map>\r\n  </div>\r\n</div> -->\r\n<div fxLayout=\"column\" fxFill>\r\n  \r\n  <div class=\"map-overlay-select row\">\r\n      <mat-progress-bar mode=\"indeterminate\" *ngIf=\"IsLoading\"></mat-progress-bar>\r\n    <div ngbDropdown class=\"d-inline-block col-md-3\">\r\n        <input class=\"btn btn-outline-primary\" type=\"button\" value=\"Draw Polygon\" (click)=\"CreatePolygonShape()\" />\r\n        <input class=\"btn btn-outline-primary\" type=\"button\" value=\"Clear Polygon\" (click)=\"ClearPolygonShape()\" />\r\n      <!-- <button class=\"btn btn-outline-primary\" id=\"imageVarDropdown\" ngbDropdownToggle>Select Image Type</button> -->\r\n      <div ngbDropdownMenu aria-labelledby=\"imageVarDropdown\">\r\n\t<button class=\"dropdown-item\" *ngFor=\"let varName of imageVarNames\" (click)=\"selectImage(varName)\">{{varName}}</button>\r\n      </div>\r\n    </div>\r\n    <div>\r\n      <p>{{selectedValidTime}}</p>\r\n    </div>\r\n    <div>\r\n      <mat-slider #imageSlider min=\"0\" max=\"{{imageValidTimes.length}}\" step=\"1\"></mat-slider>\r\n    </div>\r\n  </div>\r\n  <div *ngIf=\"mapService.isLoaded\" class=\"map-container\">\r\n    <am-map #maper\r\n\t    [initialConfig]=\"config\"\r\n\t    [_id]=\"'id'\"\r\n\t    (onMapClick)=\"onMapClick($event)\"\r\n\t    (loaded)=\"onMapLoaded()\"\r\n\t    >\r\n      \r\n    </am-map>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -9497,13 +9502,13 @@ var ForecastMapComponent = /** @class */ (function () {
         this.mapClick.emit(latLongArr);
     };
     ForecastMapComponent.prototype.onMapLoaded = function () {
-        var _this = this;
-        var url = _utils_constants_const__WEBPACK_IMPORTED_MODULE_5__["Const"].SERVER_URL + "/blend/times";
-        this.http.get(url).subscribe(function (response) {
-            _this.imageVarNames = response["var_names"];
-            _this.imageValidTimes = response["valid_times"];
-            _this.setSliderTime(0);
-        });
+        // let url = Const.SERVER_URL + "/blend/routefcst";
+        // // let url = Const.SERVER_URL;
+        // this.http.get(url).subscribe(response => {
+        //     this.imageVarNames = response["var_names"];
+        //     this.imageValidTimes = response["valid_times"];
+        //     this.setSliderTime(0);
+        // });
     };
     ForecastMapComponent.prototype.CreatePolygonShape = function () {
         var _this = this;
@@ -9716,13 +9721,13 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 var CrosswindPlot = /** @class */ (function (_super) {
     __extends(CrosswindPlot, _super);
-    function CrosswindPlot(units) {
-        var _this = _super.call(this, "Crosswind Risk Forecast", {
+    function CrosswindPlot(units, subTitle) {
+        var _this = _super.call(this, "Crosswind Risk", {
             crosswind: {
                 title: 'Crosswind Risk Forecast',
                 color: '#222222'
             }
-        }, units) || this;
+        }, units, subTitle) || this;
         _this.units = units;
         return _this;
     }
@@ -9800,13 +9805,13 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 var ElevationPlot = /** @class */ (function (_super) {
     __extends(ElevationPlot, _super);
-    function ElevationPlot(units) {
+    function ElevationPlot(units, subTitle) {
         var _this = _super.call(this, 'Elevation', {
-            elev: {
+            hgt: {
                 title: 'Elevation',
                 color: '#000'
             }
-        }, units) || this;
+        }, units, subTitle) || this;
         _this.units = units;
         return _this;
     }
@@ -9856,11 +9861,12 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 var NumericPlot = /** @class */ (function (_super) {
     __extends(NumericPlot, _super);
-    function NumericPlot(title, config, units) {
-        var _this = _super.call(this, title, config, units) || this;
+    function NumericPlot(title, config, units, subTitle) {
+        var _this = _super.call(this, title, config, units, subTitle) || this;
         _this.title = title;
         _this.config = config;
         _this.units = units;
+        _this.subTitle = subTitle;
         return _this;
     }
     NumericPlot.prototype.getForceY = function () {
@@ -9906,12 +9912,20 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 };
 
 var Plot = /** @class */ (function () {
-    function Plot(title, requiredVars, units) {
+    function Plot(title, requiredVars, units, subTitle) {
         this.title = title;
         this.requiredVars = requiredVars;
         this.units = units;
+        this.subTitle = subTitle;
         this.chartMousemove = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
         this.gradientId = 0;
+        var sub = (!subTitle || subTitle != 'null' || subTitle != null) ? subTitle : '';
+        if (units) {
+            this.displayTitle = title + ' (' + units + ') ' + sub;
+        }
+        else {
+            this.displayTitle = title + ' ' + sub;
+        }
     }
     Plot.prototype.getChartData = function () {
         var chartSeries = [];
@@ -10177,14 +10191,15 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 var PotentialDelayRiskPlot = /** @class */ (function (_super) {
     __extends(PotentialDelayRiskPlot, _super);
-    function PotentialDelayRiskPlot(units) {
-        var _this = _super.call(this, "Potential Delay Risk Forecast", {
+    function PotentialDelayRiskPlot(units, subTitle) {
+        var _this = _super.call(this, "Potential Delay Risk", {
             delay_risk: {
                 title: 'Potential Delay Risk',
                 color: '#0003dd'
             }
-        }, units) || this;
+        }, units, subTitle) || this;
         _this.units = units;
+        _this.subTitle = subTitle;
         return _this;
     }
     PotentialDelayRiskPlot.prototype.getColor = function (val) {
@@ -10276,14 +10291,15 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 var PotentialRoadStatePlot = /** @class */ (function (_super) {
     __extends(PotentialRoadStatePlot, _super);
-    function PotentialRoadStatePlot(units) {
-        var _this = _super.call(this, "Potential Road State Forecast", {
+    function PotentialRoadStatePlot(units, subTitle) {
+        var _this = _super.call(this, "Potential Road State", {
             road_state: {
                 title: 'Potential Road State',
                 color: '#0003dd'
             }
-        }, units) || this;
+        }, units, subTitle) || this;
         _this.units = units;
+        _this.subTitle = subTitle;
         return _this;
     }
     PotentialRoadStatePlot.prototype.getColor = function (val) {
@@ -10373,17 +10389,18 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 var PrecipitationPlot = /** @class */ (function (_super) {
     __extends(PrecipitationPlot, _super);
-    function PrecipitationPlot(units) {
+    function PrecipitationPlot(units, subTitle) {
         var _this = _super.call(this, "Precipitation", {
-            precip: {
+            prate: {
                 title: 'Precipitation Rate',
                 color: '#0000dd'
             },
             ptype: {
                 title: 'ptype'
             }
-        }, units) || this;
+        }, units, subTitle) || this;
         _this.units = units;
+        _this.subTitle = subTitle;
         return _this;
     }
     PrecipitationPlot.prototype.getForceY = function () {
@@ -10451,7 +10468,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 var SnowDepthPlot = /** @class */ (function (_super) {
     __extends(SnowDepthPlot, _super);
-    function SnowDepthPlot(units) {
+    function SnowDepthPlot(units, subTitle) {
         var _this = _super.call(this, "Snow Depth", {
             snod: {
                 title: 'Snow Depth',
@@ -10461,8 +10478,9 @@ var SnowDepthPlot = /** @class */ (function (_super) {
                 title: 'Cumulative',
                 color: '#222222'
             }
-        }, units) || this;
+        }, units, subTitle) || this;
         _this.units = units;
+        _this.subTitle = subTitle;
         return _this;
     }
     /**
@@ -10523,9 +10541,9 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 var TemperaturePlot = /** @class */ (function (_super) {
     __extends(TemperaturePlot, _super);
-    function TemperaturePlot(units) {
+    function TemperaturePlot(units, subTitle) {
         var _this = _super.call(this, "Temperature", {
-            temp: {
+            t: {
                 title: 'Air Temp',
                 color: '#0000dd'
             },
@@ -10540,8 +10558,9 @@ var TemperaturePlot = /** @class */ (function (_super) {
                 title:'Dew Point Temperature',
                 color:'#006400'
             }*/
-        }, units) || this;
+        }, units, subTitle) || this;
         _this.units = units;
+        _this.subTitle = subTitle;
         return _this;
     }
     /**
@@ -10566,7 +10585,7 @@ var TemperaturePlot = /** @class */ (function (_super) {
         if (val > 95) {
             return '#ff0000';
         }
-        return '#ffff00';
+        return '#fff';
     };
     return TemperaturePlot;
 }(_plots__WEBPACK_IMPORTED_MODULE_0__["Plot"]));
@@ -10602,9 +10621,9 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 var WindPlot = /** @class */ (function (_super) {
     __extends(WindPlot, _super);
-    function WindPlot(units) {
+    function WindPlot(units, subTitle) {
         var _this = _super.call(this, "Wind Speed", {
-            spd: {
+            wspd: {
                 title: 'Wind Speed',
                 color: '#222222'
             },
@@ -10612,7 +10631,7 @@ var WindPlot = /** @class */ (function (_super) {
                 title: 'Gust',
                 color: '#0000dd'
             }
-        }, units) || this;
+        }, units, subTitle) || this;
         _this.units = units;
         return _this;
     }
@@ -10873,7 +10892,7 @@ module.exports = "mat-form-field {\r\n    width: 100%;\r\n    margin-bottom: 5px
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-card>\r\n  <form\r\n      fxLayout=\"column\"\r\n      fxLayoutGap=\"10px\"\r\n      [formGroup]=\"RouteInputForm\">\r\n        <mat-form-field>\r\n          <input type=\"text\" \r\n            matInput \r\n            placeholder=\"Origin\"\r\n            formControlName=\"origin\" \r\n            [matAutocomplete]=\"origin\">\r\n          <mat-hint *ngIf=\"RouteInputForm.get('origin').hasError('required')\">Enter a starting location</mat-hint>\r\n          <mat-error *ngIf=\"RouteInputForm.get('origin').hasError('required')\">Origin is required</mat-error>\r\n        </mat-form-field>\r\n        <mat-autocomplete #origin=\"matAutocomplete\" [displayWith]=\"displayResults\">\r\n          <mat-option *ngFor=\"let origin of (originRoute | async)?.results\" [value]=\"origin\">\r\n            <span>{{ origin.address.freeformAddress }}</span>\r\n          </mat-option>\r\n        </mat-autocomplete>\r\n\r\n        <mat-form-field>\r\n            <input type=\"text\" \r\n              matInput \r\n              placeholder=\"Destination\"\r\n              formControlName=\"destination\" \r\n              [matAutocomplete]=\"destination\">\r\n            <mat-hint *ngIf=\"RouteInputForm.get('destination').hasError('required')\">Enter a ending location</mat-hint>\r\n            <mat-error *ngIf=\"RouteInputForm.get('destination').hasError('required')\">Destination is required</mat-error>\r\n          </mat-form-field>\r\n          <mat-autocomplete #destination=\"matAutocomplete\" [displayWith]=\"displayResults\">\r\n            <mat-option *ngFor=\"let destination of (destinationRoute | async)?.results\" [value]=\"destination\">\r\n              <span>{{ destination.address.freeformAddress }}</span>\r\n            </mat-option>\r\n          </mat-autocomplete>\r\n\r\n        <mat-checkbox\r\n          formControlName=\"includeAlts\" \r\n          color=\"primary\">Include alternative routes\r\n        </mat-checkbox>\r\n      <div fxLayout=\"row\" fxLayoutGap=\"10px\">\r\n          <button mat-raised-button color=\"primary\" [disabled]=\"!RouteInputForm.valid\" (click)=\"routeClick()\">Route</button>\r\n          <button mat-raised-button color=\"primary\" [disabled]=\"!RouteInputForm.valid\" (click)=\"departTimesClick(WCSearchConstantDeparturTable)\">Depart Times</button>\r\n      </div>\r\n  </form>\r\n</mat-card>\r\n"
+module.exports = "<mat-card>\r\n  <form\r\n      fxLayout=\"column\"\r\n      fxLayoutGap=\"10px\"\r\n      [formGroup]=\"RouteInputForm\">\r\n        <mat-form-field>\r\n          <input type=\"text\" \r\n            matInput \r\n            placeholder=\"Origin\"\r\n            formControlName=\"origin\" \r\n            [matAutocomplete]=\"origin\">\r\n          <mat-hint *ngIf=\"RouteInputForm.get('origin').hasError('required')\">Enter a starting location</mat-hint>\r\n          <mat-error *ngIf=\"RouteInputForm.get('origin').hasError('required')\">Origin is required</mat-error>\r\n        </mat-form-field>\r\n        <mat-autocomplete #origin=\"matAutocomplete\" [displayWith]=\"displayResults\">\r\n          <mat-option *ngFor=\"let origin of (originRoute | async)?.results\" [value]=\"origin\">\r\n            <span>{{ origin.address.freeformAddress }}</span>\r\n          </mat-option>\r\n        </mat-autocomplete>\r\n\r\n        <mat-form-field>\r\n            <input type=\"text\" \r\n              matInput \r\n              placeholder=\"Destination\"\r\n              formControlName=\"destination\" \r\n              [matAutocomplete]=\"destination\">\r\n            <mat-hint *ngIf=\"RouteInputForm.get('destination').hasError('required')\">Enter a ending location</mat-hint>\r\n            <mat-error *ngIf=\"RouteInputForm.get('destination').hasError('required')\">Destination is required</mat-error>\r\n          </mat-form-field>\r\n          <mat-autocomplete #destination=\"matAutocomplete\" [displayWith]=\"displayResults\">\r\n            <mat-option *ngFor=\"let destination of (destinationRoute | async)?.results\" [value]=\"destination\">\r\n              <span>{{ destination.address.freeformAddress }}</span>\r\n            </mat-option>\r\n          </mat-autocomplete>\r\n\r\n          <mat-form-field>\r\n            <mat-select placeholder=\"Variable Names\" formControlName=\"varNames\" multiple>\r\n              <mat-select-trigger>\r\n                  {{ RouteInputForm.get('varNames').value.length > 0 ? RouteInputForm.get('varNames').value[0]['key'] : '' }}\r\n                  <span *ngIf=\"RouteInputForm.get('varNames').value?.length > 1\" class=\"example-additional-selection\">\r\n                      (+{{RouteInputForm.get('varNames').value.length - 1}} others)\r\n                  </span>\r\n              </mat-select-trigger>\r\n              <mat-option *ngFor=\"let varName of varNamesList\" [value]=\"varName['value']\">{{varName['key']}}</mat-option>\r\n            </mat-select>\r\n            <mat-error *ngIf=\"RouteInputForm.get('varNames').hasError('required')\">Variable names are required</mat-error>\r\n          </mat-form-field>\r\n\r\n        <mat-checkbox\r\n          formControlName=\"includeAlts\" \r\n          color=\"primary\">Include alternative routes\r\n        </mat-checkbox>\r\n      <div fxLayout=\"row\" fxLayoutGap=\"10px\">\r\n          <button mat-raised-button color=\"primary\" [disabled]=\"!RouteInputForm.valid\" (click)=\"routeClick()\">Route</button>\r\n          <button mat-raised-button color=\"primary\" [disabled]=\"!RouteInputForm.valid\" (click)=\"departTimesClick(WCSearchConstantDeparturTable)\">Depart Times</button>\r\n      </div>\r\n  </form>\r\n</mat-card>\r\n"
 
 /***/ }),
 
@@ -10887,14 +10906,15 @@ module.exports = "<mat-card>\r\n  <form\r\n      fxLayout=\"column\"\r\n      fx
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RouteInputComponent", function() { return RouteInputComponent; });
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm5/forms.js");
-/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
-/* harmony import */ var _models_departure_table_departure_table_config_model__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../models/departure-table/departure-table-config.model */ "./src/app/models/departure-table/departure-table-config.model.ts");
-/* harmony import */ var _services_notification_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../services/notification.service */ "./src/app/services/notification.service.ts");
-/* harmony import */ var _models_departure_table_location_model__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../models/departure-table/location.model */ "./src/app/models/departure-table/location.model.ts");
+/* harmony import */ var _utils_constants_const__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../../utils/constants/const */ "./src/app/utils/constants/const.ts");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm5/forms.js");
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
+/* harmony import */ var _models_departure_table_departure_table_config_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../models/departure-table/departure-table-config.model */ "./src/app/models/departure-table/departure-table-config.model.ts");
+/* harmony import */ var _services_notification_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../services/notification.service */ "./src/app/services/notification.service.ts");
+/* harmony import */ var _models_departure_table_location_model__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../models/departure-table/location.model */ "./src/app/models/departure-table/location.model.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10912,12 +10932,14 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var RouteInputComponent = /** @class */ (function () {
     function RouteInputComponent(http, notificationService) {
         this.http = http;
         this.notificationService = notificationService;
-        this.route = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
-        this.departTimes = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
+        this.route = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"]();
+        this.departTimes = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"]();
+        this.varNamesList = _utils_constants_const__WEBPACK_IMPORTED_MODULE_0__["Const"].VAR_NAMES_SELECT;
         this.searching = false;
         this.searchFailed = false;
     }
@@ -10953,22 +10975,23 @@ var RouteInputComponent = /** @class */ (function () {
     });
     RouteInputComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.RouteInputForm = new _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormGroup"]({
-            origin: new _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormControl"]('', { validators: _angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required }),
-            destination: new _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormControl"]('', { validators: _angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required }),
-            includeAlts: new _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormControl"]('')
+        this.RouteInputForm = new _angular_forms__WEBPACK_IMPORTED_MODULE_2__["FormGroup"]({
+            origin: new _angular_forms__WEBPACK_IMPORTED_MODULE_2__["FormControl"]('', { validators: _angular_forms__WEBPACK_IMPORTED_MODULE_2__["Validators"].required }),
+            destination: new _angular_forms__WEBPACK_IMPORTED_MODULE_2__["FormControl"]('', { validators: _angular_forms__WEBPACK_IMPORTED_MODULE_2__["Validators"].required }),
+            varNames: new _angular_forms__WEBPACK_IMPORTED_MODULE_2__["FormControl"]('', { validators: _angular_forms__WEBPACK_IMPORTED_MODULE_2__["Validators"].required }),
+            includeAlts: new _angular_forms__WEBPACK_IMPORTED_MODULE_2__["FormControl"]('')
         });
         this.originRoute = this.RouteInputForm.get('origin').valueChanges
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["debounceTime"])(300), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["distinctUntilChanged"])(), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(function () { return _this.searching = true; }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["switchMap"])(function (term) { return _this.locationSearch(term)
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(function () { return _this.searchFailed = false; }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["catchError"])(function () {
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["debounceTime"])(300), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["distinctUntilChanged"])(), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["tap"])(function () { return _this.searching = true; }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["switchMap"])(function (term) { return _this.locationSearch(term)
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["tap"])(function () { return _this.searchFailed = false; }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["catchError"])(function () {
             _this.searchFailed = true;
-            return Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["of"])(new _models_departure_table_location_model__WEBPACK_IMPORTED_MODULE_7__["LocationModel"]());
+            return Object(rxjs__WEBPACK_IMPORTED_MODULE_4__["of"])(new _models_departure_table_location_model__WEBPACK_IMPORTED_MODULE_8__["LocationModel"]());
         })); }));
         this.destinationRoute = this.RouteInputForm.get('destination').valueChanges
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["debounceTime"])(300), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["distinctUntilChanged"])(), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(function () { return _this.searching = true; }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["switchMap"])(function (term) { return _this.locationSearch(term)
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(function () { return _this.searchFailed = false; }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["catchError"])(function () {
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["debounceTime"])(300), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["distinctUntilChanged"])(), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["tap"])(function () { return _this.searching = true; }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["switchMap"])(function (term) { return _this.locationSearch(term)
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["tap"])(function () { return _this.searchFailed = false; }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["catchError"])(function () {
             _this.searchFailed = true;
-            return Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["of"])(new _models_departure_table_location_model__WEBPACK_IMPORTED_MODULE_7__["LocationModel"]());
+            return Object(rxjs__WEBPACK_IMPORTED_MODULE_4__["of"])(new _models_departure_table_location_model__WEBPACK_IMPORTED_MODULE_8__["LocationModel"]());
         })); }));
         this.onChanges();
     };
@@ -10987,7 +11010,9 @@ var RouteInputComponent = /** @class */ (function () {
         this.origin = this.RouteInputForm.value.origin.position.lat + ',' + this.RouteInputForm.value.origin.position.lon;
         this.destination = this.RouteInputForm.value.destination.position.lat + ',' + this.RouteInputForm.value.destination.position.lon;
         this.showAlternatives = this.RouteInputForm.value.includeAlts ? true : false;
-        this.notificationService.updateRoute(new _models_departure_table_departure_table_config_model__WEBPACK_IMPORTED_MODULE_5__["DepartureTableModel"](this.origin, this.destination, '1553698800', this.showAlternatives));
+        _utils_constants_const__WEBPACK_IMPORTED_MODULE_0__["Const"].VAR_NAMES = this.RouteInputForm.value.varNames.join();
+        console.log('var names', _utils_constants_const__WEBPACK_IMPORTED_MODULE_0__["Const"].VAR_NAMES);
+        this.notificationService.updateRoute(new _models_departure_table_departure_table_config_model__WEBPACK_IMPORTED_MODULE_6__["DepartureTableModel"](this.origin, this.destination, '1553698800', this.showAlternatives));
     };
     RouteInputComponent.prototype.departTimesClick = function (val) {
         if (!this.RouteInputForm.valid) {
@@ -10996,13 +11021,13 @@ var RouteInputComponent = /** @class */ (function () {
         this.origin = this.RouteInputForm.value.origin.position.lat + ',' + this.RouteInputForm.value.origin.position.lon;
         this.destination = this.RouteInputForm.value.destination.position.lat + ',' + this.RouteInputForm.value.destination.position.lon;
         this.showAlternatives = this.RouteInputForm.value.includeAlts ? true : false;
-        this.notificationService.updateDepartureTable(new _models_departure_table_departure_table_config_model__WEBPACK_IMPORTED_MODULE_5__["DepartureTableModel"](this.origin, this.destination, '1553698800', this.showAlternatives));
+        this.notificationService.updateDepartureTable(new _models_departure_table_departure_table_config_model__WEBPACK_IMPORTED_MODULE_6__["DepartureTableModel"](this.origin, this.destination, '1553698800', this.showAlternatives));
     };
     RouteInputComponent.prototype.locationSearch = function (text) {
         if (!text) {
-            return Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["of"])(new _models_departure_table_location_model__WEBPACK_IMPORTED_MODULE_7__["LocationModel"]());
+            return Object(rxjs__WEBPACK_IMPORTED_MODULE_4__["of"])(new _models_departure_table_location_model__WEBPACK_IMPORTED_MODULE_8__["LocationModel"]());
         }
-        var headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]();
+        var headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_3__["HttpHeaders"]();
         headers = headers.set('Ocp-Apim-Subscription-Key', this.lbsKey);
         var url = "https://atlas.microsoft.com/search/address/json";
         var params = {
@@ -11012,7 +11037,7 @@ var RouteInputComponent = /** @class */ (function () {
             "Subscription-Key": this.lbsKey
         };
         return this.http.get(url, { params: params, headers: headers })
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(function (res) {
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["tap"])(function (res) {
             return res.results;
         }));
     };
@@ -11022,24 +11047,24 @@ var RouteInputComponent = /** @class */ (function () {
         }
     };
     __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
         __metadata("design:type", String)
     ], RouteInputComponent.prototype, "lbsKey", void 0);
     __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Output"])(),
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Output"])(),
         __metadata("design:type", Object)
     ], RouteInputComponent.prototype, "route", void 0);
     __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Output"])(),
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Output"])(),
         __metadata("design:type", Object)
     ], RouteInputComponent.prototype, "departTimes", void 0);
     RouteInputComponent = __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
             selector: 'route-input',
             template: __webpack_require__(/*! ./routeInput.component.html */ "./src/app/components/route-input/routeInput.component.html"),
             styles: [__webpack_require__(/*! ./routeInput.component.css */ "./src/app/components/route-input/routeInput.component.css")]
         }),
-        __metadata("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"], _services_notification_service__WEBPACK_IMPORTED_MODULE_6__["NotificationService"]])
+        __metadata("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_3__["HttpClient"], _services_notification_service__WEBPACK_IMPORTED_MODULE_7__["NotificationService"]])
     ], RouteInputComponent);
     return RouteInputComponent;
 }());
@@ -11662,13 +11687,29 @@ var Const = /** @class */ (function () {
     function Const() {
     }
     Const.LBS_KEY = "4SnPOVldyLX7qlZocZBTSA4TKMq8EQJuURinOs0Wl78";
-    Const.SERVER_URL = 'https://wxlb01.fathym.com/route';
+    Const.SERVER_URL = 'http://fathymwx.eastus.cloudapp.azure.com';
+    // public static SERVER_URL: string = 'https://wxlb01.fathym.com/route';
     // public static SERVER_URL = "http://wxcloud-hrrr.westus.cloudapp.azure.com";
     // public static SERVER_URL = "http://localhost";
     Const.FORECAST_IMAGE_DATE_FORMAT = "yyyyMMdd.HHmm";
     Const.FORECAST_DISPLAY_DATE_FORMAT = "EEE HH:mm";
     Const.FCST_CFG = "hrrr_config";
-    Const.VAR_NAMES = "t,sfc_t,prate,ptype,spd,gust,cloudcover,rad,vis,rt,primary_roadstate";
+    // public static VAR_NAMES = "t,sfc_t,prate,ptype,wspd,gust,cloudcover,rad,vis,hgt,snod,wdir";
+    Const.VAR_NAMES = '';
+    Const.VAR_NAMES_SELECT = [
+        { key: 'Temperature', value: 't' },
+        { key: 'Surface Temp', value: 'sfc_t' },
+        { key: 'Precipitation', value: 'prate' },
+        { key: 'Precipitation Type', value: 'ptype' },
+        { key: 'Wind Speed', value: 'wspd' },
+        { key: 'Wind Gust', value: 'gust' },
+        { key: 'Wind Direction', value: 'wdir' },
+        { key: 'Cloud Cover', value: 'cloudcover' },
+        { key: 'Radiation', value: 'rad' },
+        { key: 'Visibility', value: 'vis' },
+        { key: 'Elevation', value: 'hgt' },
+        { key: 'Snow Depth', value: 'snod' }
+    ];
     return Const;
 }());
 
@@ -12495,7 +12536,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! D:\projects\workspace\Fathym\Fathym.WeatherCloud.UI\src\main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! C:\Users\trevo\source\repos\fathym-forecast\src\main.ts */"./src/main.ts");
 
 
 /***/ })
