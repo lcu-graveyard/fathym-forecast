@@ -1,7 +1,18 @@
 {
-  "name": "angular",
-  "version": "0.0.0",
-  "private": true,
+  "name": "@habistack/fathym-forecast",
+  "version": "0.0.2",
+  "scripts": {
+    "build:wxcloud-ui": "ng build wxcloud-ui --prod",
+    "deploy": "npm version patch --prefix ./dist/wxcloud-ui && npm publish ./dist/wxcloud-ui --access public",
+    "version:wxcloud-ui": "npm version patch --prefix ./dist/wxcloud-ui",
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e"
+  },
+  "private": false,
   "dependencies": {
     "@acaisoft/angular-azure-maps": "^1.0.0",
     "@angular/animations": "~7.1.0",
@@ -35,14 +46,6 @@
     "ui": "0.2.4",
     "web-animations-js": "",
     "zone.js": "0.8.26"
-  },
-  "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.11.0",
