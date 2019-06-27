@@ -1,10 +1,10 @@
 {
-  "name": "@fathym-it/fathym-forecast",
-  "version": "0.0.1",
+  "name": "@habistack/fathym-forecast",
+  "version": "0.0.2",
   "scripts": {
     "build:wxcloud-ui": "ng build wxcloud-ui --prod",
-    "deploy": "npm publish ./dist/wxcloud-ui --access public",
-    "version:wxcloud-ui": "npm version patch --prefix projects/wxcloud-ui",
+    "deploy": "npm version patch --prefix ./dist/wxcloud-ui && npm publish ./dist/wxcloud-ui --access public",
+    "version:wxcloud-ui": "npm version patch --prefix ./dist/wxcloud-ui",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
