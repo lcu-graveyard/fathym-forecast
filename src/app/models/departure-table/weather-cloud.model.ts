@@ -1,4 +1,4 @@
-export class WeatherCloudModel {
+export class FathymForecastModel {
   public windGustMin: number;
   public windGustMax: number;
   public precipMin: number;

@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators';
-import { WeatherCloudModel } from '../models/departure-table/weather-cloud.model';
+import { FathymForecastModel } from '../models/departure-table/weather-cloud.model';
 import { HttpUrlEncoder } from '../utils/http/http-url-encoder.utils';
 
 @Injectable()
-export class WeatherCloudService {
+export class FathymForecastService {
 
   protected apiRoot: string;
 
@@ -85,11 +85,11 @@ export class WeatherCloudService {
    * Remap the data being returned so it fits with format we expect
    * @param val Date being returned from API
    */
-  private remapData(val: any): Array<WeatherCloudModel> {
-    const arr: Array<WeatherCloudModel> = [];
+  private remapData(val: any): Array<FathymForecastModel> {
+    const arr: Array<FathymForecastModel> = [];
     const element = val['data'][0];
       Object.keys(element).forEach((key, index) => {
-        const item = {} as WeatherCloudModel;
+        const item = {} as FathymForecastModel;
         Object.keys(element[key]).forEach((childKey, childIndex) => {
           switch (childKey.toUpperCase()) {
             case 'GUST':

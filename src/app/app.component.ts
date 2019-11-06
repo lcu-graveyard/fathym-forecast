@@ -12,9 +12,9 @@ import { DataGridFeatures } from './config/departure-table/data-grid-features.co
 import { DataGridPagination } from './config/departure-table/data-grid-pagination.config';
 import { ColumnDefinition } from './config/departure-table/column-def.config';
 import { PipeConstants } from './utils/constants/pipe.constants';
-import { WeatherCloudModel } from './models/departure-table/weather-cloud.model';
-import { WeatherCloudService } from './services/weathercloud.service';
-import { WeatherCloudConditionIcons } from './utils/weather-cloud/weather-cloud-conditions-icons.util';
+import { FathymForecastModel } from './models/departure-table/weather-cloud.model';
+import { FathymForecastService } from './services/fathymforecast.service';
+import { FathymForecastConditionIcons } from './utils/weather-cloud/weather-cloud-conditions-icons.util';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { NotificationService } from './services/notification.service';
 import { DepartureTableModel } from './models/departure-table/departure-table-config.model';
@@ -40,7 +40,7 @@ export class AppComponent implements OnInit, OnDestroy  {
 	protected routeChangeSubscription: Subscription;
 	protected PolygonShapeChangeSubscription: Subscription;
 
-    name = 'WeatherCloud Route Forecast';
+    name = 'FathymForecast Route Forecast';
 	lbsKey = Const.LBS_KEY;
 	
     @ViewChild('routeInput') routeInput:RouteInputComponent;
@@ -58,7 +58,7 @@ export class AppComponent implements OnInit, OnDestroy  {
 		private http:HttpClient, 
 		private spinner: NgxSpinnerService,
 		private notificationService: NotificationService,
-		private weatherCloudService: WeatherCloudService) {
+		private fathymForecastService: FathymForecastService) {
 
 		this.loadDataSources();
     }
@@ -346,7 +346,7 @@ export class AppComponent implements OnInit, OnDestroy  {
 		 true, 
 		 false, 
 		 PipeConstants.PIPE_TEMP_FAHRENHEIT, 
-		 WeatherCloudConditionIcons
+		 FathymForecastConditionIcons
 		 ),
 	 new ColumnDefinition(
 		 'tempMax', 
@@ -355,7 +355,7 @@ export class AppComponent implements OnInit, OnDestroy  {
 		 true, 
 		 false, 
 		 PipeConstants.PIPE_TEMP_FAHRENHEIT, 
-		 WeatherCloudConditionIcons
+		 FathymForecastConditionIcons
 		 ),
 	 new ColumnDefinition(
 		 'precipMax', 
@@ -364,7 +364,7 @@ export class AppComponent implements OnInit, OnDestroy  {
 		 true, 
 		 false, 
 		 null, 
-		 WeatherCloudConditionIcons
+		 FathymForecastConditionIcons
 		 ),
 	 new ColumnDefinition(
 		 'windSpdMax', 
@@ -373,7 +373,7 @@ export class AppComponent implements OnInit, OnDestroy  {
 		 true, 
 		 false, 
 		 PipeConstants.PIPE_MPH, 
-		 WeatherCloudConditionIcons
+		 FathymForecastConditionIcons
 		 ),
 	 new ColumnDefinition(
 		 'windGustMax', 
@@ -382,7 +382,7 @@ export class AppComponent implements OnInit, OnDestroy  {
 		 true, 
 		 false, 
 		 PipeConstants.PIPE_MPH, 
-		 WeatherCloudConditionIcons
+		 FathymForecastConditionIcons
 		 )
 	 ];
 
@@ -395,6 +395,6 @@ export class AppComponent implements OnInit, OnDestroy  {
 	 features.filter = true;
 
 	this.gridParameters = new DataGridConfig(
-		this.weatherCloudService.DepartureTableData(this.apiKey, params.origin, params.destination, params.departureTime, params.includeAltRoutes), this.columnDefs, features);
+		this.fathymForecastService.DepartureTableData(this.apiKey, params.origin, params.destination, params.departureTime, params.includeAltRoutes), this.columnDefs, features);
    }
 }

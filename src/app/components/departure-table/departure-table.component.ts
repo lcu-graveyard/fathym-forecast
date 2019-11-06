@@ -1,5 +1,5 @@
-import { WeatherCloudConditionIcons } from './../../utils/weather-cloud/weather-cloud-conditions-icons.util';
-import { WeatherCloudModel } from './../../models/departure-table/weather-cloud.model';
+import { FathymForecastConditionIcons } from './../../utils/weather-cloud/weather-cloud-conditions-icons.util';
+import { FathymForecastModel } from './../../models/departure-table/weather-cloud.model';
 import {  Component, 
           AfterViewInit, 
           AfterContentChecked, 
