@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "wxcloud-ui": {
+    "fmforecast-ui": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/wxcloud-ui",
+            "outputPath": "dist/fmforecast-ui",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -51,18 +51,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "wxcloud-ui:build"
+            "browserTarget": "fmforecast-ui:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "wxcloud-ui:build:production"
+              "browserTarget": "fmforecast-ui:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "wxcloud-ui:build"
+            "browserTarget": "fmforecast-ui:build"
           }
         },
         "test": {
@@ -97,5 +97,5 @@
       }
     }
   },
-  "defaultProject": "wxcloud-ui"
+  "defaultProject": "fmforecast-ui"
 }

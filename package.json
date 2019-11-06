@@ -2,9 +2,9 @@
   "name": "@habistack/fathym-forecast",
   "version": "0.0.2",
   "scripts": {
-    "build:wxcloud-ui": "ng build wxcloud-ui --prod",
-    "deploy": "npm version patch --prefix ./dist/wxcloud-ui && npm publish ./dist/wxcloud-ui --access public",
-    "version:wxcloud-ui": "npm version patch --prefix ./dist/wxcloud-ui",
+    "build:fmforecast-ui": "ng build fmforecast-ui --prod",
+    "deploy": "npm version patch --prefix ./dist/fmforecast-ui && npm publish ./dist/fmforecast-ui --access public",
+    "version:fmforecast-ui": "npm version patch --prefix ./dist/fmforecast-ui",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
