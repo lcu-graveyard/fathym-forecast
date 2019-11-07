@@ -25,8 +25,8 @@ export class RouteInputComponent implements OnInit  {
 	public originRoute: Observable<LocationModel>;
 	public destinationRoute: Observable<LocationModel>;
 	
-	public WCSearchConstantDeparturTable: string;
-	public WCSearchConstantRoute: string;
+	public FFSearchConstantDeparturTable: string;
+	public FFSearchConstantRoute: string;
 
 	public varNamesList: Array<object> = Const.VAR_NAMES_SELECT;
 

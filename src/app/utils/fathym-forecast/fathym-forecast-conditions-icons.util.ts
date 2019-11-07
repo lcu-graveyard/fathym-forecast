@@ -1,4 +1,4 @@
-import { FathymForecastModel } from './../../models/departure-table/weather-cloud.model';
+import { FathymForecastModel } from '../../models/departure-table/fathym-forecast.model';
 
 export class FathymForecastConditionIcons {
 
@@ -27,7 +27,7 @@ export class FathymForecastConditionIcons {
     let icon: string = '';
     switch (data.ptypeMax) {
       case 0: // not concerned with ptypeMax of zero
-        icon = 'icon-no_value wc-icon-none';
+        icon = 'icon-no_value ff-icon-none';
         // data.precipMax = 0; 
       break;
       case 1:
@@ -56,7 +56,7 @@ export class FathymForecastConditionIcons {
     const heavy: boolean = this.isBetween(precipMax, 0.2125, 0.375);
     const extreme: boolean = precipMax > 0.375;
 
-    if (none) { return 'icon-no_value wc-icon-none'; }
+    if (none) { return 'icon-no_value ff-icon-none'; }
     if (light) { return 'icon-rain_light temperature-ok'; }
     if (med) { return 'icon-rain_medium temperature-warn'; }
     if (heavy) { return 'icon-rain_heavy temperature-alert'; }
@@ -71,7 +71,7 @@ export class FathymForecastConditionIcons {
     const heavy: boolean = this.isBetween(precipMax, 0.1125, 0.275);
     const extreme: boolean = precipMax > 0.275;
 
-    if (none) { return 'icon-no_value wc-icon-none'; }
+    if (none) { return 'icon-no_value ff-icon-none'; }
     if (light) { return 'icon-rain_snow_mixed_light temperature-ok'; }
     if (med) { return 'icon-rain_snow_mixed_medium temperature-warn'; }
     if (heavy) { return 'icon-rain_snow_mixed_heavy temperature-alert'; }
@@ -86,7 +86,7 @@ export class FathymForecastConditionIcons {
     const heavy: boolean = this.isBetween(precipMax, 0.08, 0.13);
     const extreme: boolean = precipMax > 0.13;
 
-    if (none) { return 'icon-no_value wc-icon-none'; }
+    if (none) { return 'icon-no_value ff-icon-none'; }
     if (light) { return 'icon-snow_light temperature-ok'; }
     if (med) { return 'icon-snow_medium temperature-warn'; }
     if (heavy) { return 'icon-snow_heavy temperature-alert'; }
@@ -100,7 +100,7 @@ export class FathymForecastConditionIcons {
     const heavy: boolean = windSpdMax > 29 && windSpdMax < 40;
     const extreme: boolean = windSpdMax >= 40;
 
-    if (none) { return 'icon-no_value wc-icon-none'; }
+    if (none) { return 'icon-no_value ff-icon-none'; }
     if (light) { return 'icon-wind_light temperature-ok'; }
     if (med) { return 'icon-wind_medium temperature-warn'; }
     if (heavy) { return 'icon-wind_heavy temperature-alert'; }
@@ -114,7 +114,7 @@ export class FathymForecastConditionIcons {
     const heavy: boolean = windGustMax > 29;
     const extreme: boolean = windGustMax >= 40;
 
-    if (none) { return 'icon-no_value wc-icon-none'; }
+    if (none) { return 'icon-no_value ff-icon-none'; }
     if (light) { return 'icon-wind_light temperature-ok'; }
     if (med) { return 'icon-wind_medium temperature-warn'; }
     if (heavy) { return 'icon-wind_heavy temperature-alert'; }

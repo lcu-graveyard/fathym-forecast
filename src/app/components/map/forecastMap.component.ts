@@ -1,4 +1,4 @@
-import { PolygonDrawingTool } from '../../utils/weather-cloud/map/polygon-drawing-tool.utils';
+import { PolygonDrawingTool } from '../../utils/fathym-forecast/map/polygon-drawing-tool.utils';
 
 import { Component, Input, Output, OnInit, ViewChild, EventEmitter } from '@angular/core';
 import { LoadMapService, AtlasMapComponent } from "@acaisoft/angular-azure-maps";
@@ -235,7 +235,7 @@ export class ForecastMapComponent implements OnInit {
             tileUrl:url,
             opacity: 0.7,
             tileSize:256
-            },'wximage'));
+            },'ffimage'));
         }
     }
 

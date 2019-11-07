@@ -1,5 +1,5 @@
 
-export class WCDatasourceTypesModel {
+export class FFDatasourceTypesModel {
   public FcstCfg: string;
   public Host: string;
   public Name: string;
@@ -23,7 +23,7 @@ export class WCDatasourceTypesModel {
 
   // constructor(fcstCfg: string, host: string, name: string, urlPrefix: string, varNames: string) {
   constructor(obj: object) {
-    console.log('name: ', Object.getOwnPropertyNames(WCDatasourceTypesModel));
+    console.log('name: ', Object.getOwnPropertyNames(FFDatasourceTypesModel));
 
 Object.keys(obj).forEach((key) => {
  // console.log(key + ': ' + obj[key]);

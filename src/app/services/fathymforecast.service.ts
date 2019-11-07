@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators';
-import { FathymForecastModel } from '../models/departure-table/weather-cloud.model';
+import { FathymForecastModel } from '../models/departure-table/fathym-forecast.model';
 import { HttpUrlEncoder } from '../utils/http/http-url-encoder.utils';
 
 @Injectable()

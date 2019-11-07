@@ -12,16 +12,16 @@ import { DataGridFeatures } from './config/departure-table/data-grid-features.co
 import { DataGridPagination } from './config/departure-table/data-grid-pagination.config';
 import { ColumnDefinition } from './config/departure-table/column-def.config';
 import { PipeConstants } from './utils/constants/pipe.constants';
-import { FathymForecastModel } from './models/departure-table/weather-cloud.model';
+import { FathymForecastModel } from './models/departure-table/fathym-forecast.model';
 import { FathymForecastService } from './services/fathymforecast.service';
-import { FathymForecastConditionIcons } from './utils/weather-cloud/weather-cloud-conditions-icons.util';
+import { FathymForecastConditionIcons } from './utils/fathym-forecast/fathym-forecast-conditions-icons.util';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { NotificationService } from './services/notification.service';
 import { DepartureTableModel } from './models/departure-table/departure-table-config.model';
 import { map, catchError } from 'rxjs/operators';
 import { throwError, of } from 'rxjs';
 import { Const } from './utils/constants/const';
-import { WCDatasourceTypesModel } from './models/wc-datasource-types.model';
+import { FFDatasourceTypesModel } from './models/ff-datasource-types.model';
 
 declare const require;
 
@@ -153,7 +153,7 @@ export class AppComponent implements OnInit, OnDestroy  {
 	    host:'http://localhost',
 	    varNames:null
 	}];
-	const test: WCDatasourceTypesModel = new WCDatasourceTypesModel(this.dataSources[2]);
+	const test: FFDatasourceTypesModel = new FFDatasourceTypesModel(this.dataSources[2]);
 	this.selectDataSource(this.dataSources[2]);
     }
 
