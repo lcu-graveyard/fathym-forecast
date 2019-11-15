@@ -1,4 +1,4 @@
-import { PolygonDrawingTool } from '../../utils/weather-cloud/map/polygon-drawing-tool.utils';
+import { PolygonDrawingTool } from '../../utils/fathym-forecast/map/polygon-drawing-tool.utils';
 
 import { Component, Input, Output, OnInit, ViewChild, EventEmitter } from '@angular/core';
 import { LoadMapService, AtlasMapComponent } from "@acaisoft/angular-azure-maps";
@@ -8,7 +8,7 @@ import { Const } from '../../utils/constants/const';
 import { DisplayDateFormatPipe } from '../../utils/pipes/timeFormat.pipe';
 import { ImageDateFormatPipe } from '../../utils/pipes/imageTimeFormat.pipe';
 import { MatSlider } from '@angular/material';
-import { WeatherCloudService } from '../../services/weathercloud.service';
+import { FathymForecastService } from '../../services/fathymforecast.service';
 import { throwError } from 'rxjs/internal/observable/throwError';
 import { of } from 'rxjs/internal/observable/of';
 import { NotificationService } from 'src/app/services/notification.service';
@@ -55,7 +55,7 @@ export class ForecastMapComponent implements OnInit {
         public mapService: LoadMapService, 
         private displayDatePipe:DisplayDateFormatPipe, 
         private imageDatePipe:ImageDateFormatPipe,
-        private weatherCloudService: WeatherCloudService,
+        private fathymForecastService: FathymForecastService,
         private notificationService: NotificationService) {
     }
 
@@ -108,7 +108,7 @@ export class ForecastMapComponent implements OnInit {
   protected shapeRegionCallback(data: Array<Array<number>>): void {
     this.IsLoading = true;
 
-    this.weatherCloudService.ShapeRegion(data)
+    this.fathymForecastService.ShapeRegion(data)
     .pipe(
         map(res => res),
             catchError(err => {
@@ -235,7 +235,7 @@ export class ForecastMapComponent implements OnInit {
             tileUrl:url,
             opacity: 0.7,
             tileSize:256
-            },'wximage'));
+            },'ffimage'));
         }
     }
 

@@ -1,5 +1,5 @@
-import { WeatherCloudConditionIcons } from './../../utils/weather-cloud/weather-cloud-conditions-icons.util';
-import { WeatherCloudModel } from './../../models/departure-table/weather-cloud.model';
+import { FathymForecastConditionIcons } from './../../utils/fathym-forecast/fathym-forecast-conditions-icons.util';
+import { FathymForecastModel } from './../../models/departure-table/fathym-forecast.model';
 import {  Component, 
           AfterViewInit, 
           AfterContentChecked, 
@@ -12,7 +12,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
 
 @Component({
-  selector: 'wc-departure-table',
+  selector: 'ff-departure-table',
   templateUrl: './departure-table.component.html',
   styleUrls: ['./departure-table.component.scss']
 })

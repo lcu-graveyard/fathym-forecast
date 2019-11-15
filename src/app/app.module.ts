@@ -26,7 +26,7 @@ import 'd3';
 import 'nvd3';
 import { DepartureTableComponent } from './components/departure-table/departure-table.component';
 import { SharedModule } from './modules/shared/shared.module';
-import { WeatherCloudService } from './services/weathercloud.service';
+import { FathymForecastService } from './services/fathymforecast.service';
 
 @NgModule({
     imports: [  BrowserModule, 
@@ -52,7 +52,7 @@ import { WeatherCloudService } from './services/weathercloud.service';
                     DepartureTableComponent ],
     bootstrap:    [ AppComponent ],
     providers:    [ LoadMapService, 
-                    WeatherCloudService,
+                    FathymForecastService,
                     NotificationService,
                     DisplayDateFormatPipe, 
                     ImageDateFormatPipe ]

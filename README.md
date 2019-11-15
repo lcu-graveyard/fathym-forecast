@@ -1,6 +1,6 @@
-## WeatherCloud UI Componenets
+## FathymForecast UI Componenets
 
-This project provides Angular 2+ components that interface with the Weather Cloud forecast backend.
+This project provides Angular 2+ components that interface with the Fathym Forecast forecast backend.
 
 ### Configure
 
@@ -19,7 +19,7 @@ Provides auto-complete origin/destination/includeAlts controls:
 
 ### Forecast Data Plot Component
 
-Provides vertical list of charts given a forecast data response from weathercloud backend:
+Provides vertical list of charts given a forecast data response from fathymforecast backend:
 
 | param | in/out | description | example |
 | --- | --- | --- | --- |
